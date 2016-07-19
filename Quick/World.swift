@@ -23,7 +23,7 @@ public typealias SharedExampleClosure = (SharedExampleContext) -> ()
     You may configure how Quick behaves by calling the -[World configure:]
     method from within an overridden +[QuickConfiguration configure:] method.
 */
-@objc final public class World {
+@objc final public class World: NSObject {
     /**
         The example group that is currently being run.
         The DSL requires that this group is correctly set in order to build a
@@ -56,7 +56,7 @@ public typealias SharedExampleClosure = (SharedExampleContext) -> ()
 
     // MARK: Singleton Constructor
 
-    private init() {}
+    override private init() {}
     private struct Shared {
         static let instance = World()
     }
@@ -135,7 +135,7 @@ public typealias SharedExampleClosure = (SharedExampleContext) -> ()
         // 1. Grab all included examples.
         let included = includedExamples
         // 2. Grab the intersection of (a) examples for this spec, and (b) included examples.
-        let spec = rootExampleGroupForSpecClass(specClass).examples.filter { contains(included, $0) }
+        let spec = rootExampleGroupForSpecClass(specClass).examples.filter { included.contains($0) }
         // 3. Remove all excluded examples.
         return spec.filter { example in
             !self.configuration.exclusionFilters.reduce(false) { $0 || $1(example: example) }

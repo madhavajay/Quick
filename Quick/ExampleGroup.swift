@@ -3,18 +3,18 @@
     the `describe` and `context` functions. Example groups can share
     setup and teardown code.
 */
-@objc final public class ExampleGroup {
+final public class ExampleGroup: NSObject {
     weak internal var parent: ExampleGroup?
     internal let hooks = ExampleHooks()
 
-    private let description: String
+    private let desc: String
     private let flags: FilterFlags
     private let isInternalRootExampleGroup: Bool
     private var childGroups = [ExampleGroup]()
     private var childExamples = [Example]()
 
-    internal init(description: String, flags: FilterFlags, isInternalRootExampleGroup: Bool = false) {
-        self.description = description
+    internal init(description desc: String, flags: FilterFlags, isInternalRootExampleGroup: Bool = false) {
+        self.desc = desc
         self.flags = flags
         self.isInternalRootExampleGroup = isInternalRootExampleGroup
     }
@@ -26,7 +26,7 @@
     public var examples: [Example] {
         var examples = childExamples
         for group in childGroups {
-            examples.extend(group.examples)
+            examples.appendContentsOf(group.examples)
         }
         return examples
     }
@@ -34,11 +34,11 @@
     internal var name: String? {
         if let parent = parent {
             switch(parent.name) {
-            case .Some(let name): return "\(name), \(description)"
-            case .None: return description
+            case .Some(let name): return "\(name), \(desc)"
+            case .None: return desc
             }
         } else {
-            return isInternalRootExampleGroup ? nil : description
+            return isInternalRootExampleGroup ? nil : desc
         }
     }
 
@@ -53,9 +53,9 @@
     }
 
     internal var befores: [BeforeExampleWithMetadataClosure] {
-        var closures = hooks.befores.reverse()
+        var closures: [BeforeExampleWithMetadataClosure] = hooks.befores.reverse()
         walkUp() { (group: ExampleGroup) -> () in
-            closures.extend(group.hooks.befores.reverse())
+            closures.appendContentsOf(group.hooks.befores.reverse())
         }
         return closures.reverse()
     }
@@ -63,7 +63,7 @@
     internal var afters: [AfterExampleWithMetadataClosure] {
         var closures = hooks.afters
         walkUp() { (group: ExampleGroup) -> () in
-            closures.extend(group.hooks.afters)
+            closures.appendContentsOf(group.hooks.afters)
         }
         return closures
     }

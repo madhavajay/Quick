@@ -4,7 +4,7 @@ private var numberOfExamplesRun = 0
     Examples, defined with the `it` function, use assertions to
     demonstrate how code should behave. These are like "tests" in XCTest.
 */
-@objc final public class Example: Equatable {
+final public class Example: NSObject {
     /**
         A boolean indicating whether the example is a shared example;
         i.e.: whether it is an example defined with `itBehavesLike`.
@@ -20,12 +20,12 @@ private var numberOfExamplesRun = 0
 
     weak internal var group: ExampleGroup?
 
-    private let description: String
+    private let desc: String
     private let closure: () -> ()
     private let flags: FilterFlags
 
-    internal init(description: String, callsite: Callsite, flags: FilterFlags, closure: () -> ()) {
-        self.description = description
+    internal init(description desc: String, callsite: Callsite, flags: FilterFlags, closure: () -> ()) {
+        self.desc = desc
         self.closure = closure
         self.callsite = callsite
         self.flags = flags
@@ -41,8 +41,8 @@ private var numberOfExamplesRun = 0
     */
     public var name: String {
         switch group!.name {
-        case .Some(let groupName): return "\(groupName), \(description)"
-        case .None: return description
+        case .Some(let groupName): return "\(groupName), \(desc)"
+        case .None: return desc
         }
     }
 
@@ -72,7 +72,7 @@ private var numberOfExamplesRun = 0
         }
         world.exampleHooks.executeAfters(exampleMetadata)
 
-        ++numberOfExamplesRun
+        numberOfExamplesRun += 1
 
         if !world.isRunningAdditionalSuites && numberOfExamplesRun >= world.exampleCount {
             world.suiteHooks.executeAfters()

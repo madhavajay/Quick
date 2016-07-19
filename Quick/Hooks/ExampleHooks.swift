@@ -1,7 +1,7 @@
 /**
     A container for closures to be executed before and after each example.
 */
-final internal class ExampleHooks {
+final internal class ExampleHooks: NSObject {
 
     internal var befores: [BeforeExampleWithMetadataClosure] = []
     internal var afters: [AfterExampleWithMetadataClosure] = []
@@ -10,7 +10,7 @@ final internal class ExampleHooks {
         befores.append(closure)
     }
 
-    internal func appendBefore(closure: BeforeExampleClosure) {
+    internal func appendBefore(closure closure: BeforeExampleClosure) {
         befores.append { (exampleMetadata: ExampleMetadata) in closure() }
     }
 
@@ -18,7 +18,7 @@ final internal class ExampleHooks {
         afters.append(closure)
     }
 
-    internal func appendAfter(closure: AfterExampleClosure) {
+    internal func appendAfter(closure closure: AfterExampleClosure) {
         afters.append { (exampleMetadata: ExampleMetadata) in closure() }
     }
 

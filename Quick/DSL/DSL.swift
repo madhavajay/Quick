@@ -73,7 +73,7 @@ public func describe(description: String, flags: FilterFlags = [:], closure: () 
     Defines an example group. Equivalent to `describe`.
 */
 public func context(description: String, flags: FilterFlags = [:], closure: () -> ()) {
-    describe(description, flags: flags, closure)
+    describe(description, flags: flags, closure: closure)
 }
 
 /**
@@ -92,7 +92,7 @@ public func beforeEach(closure: BeforeExampleClosure) {
     Identical to Quick.DSL.beforeEach, except the closure is provided with
     metadata on the example that the closure is being run prior to.
 */
-public func beforeEach(#closure: BeforeExampleWithMetadataClosure) {
+public func beforeEach(closure: BeforeExampleWithMetadataClosure) {
     World.sharedWorld().beforeEach(closure: closure)
 }
 
@@ -112,7 +112,7 @@ public func afterEach(closure: AfterExampleClosure) {
     Identical to Quick.DSL.afterEach, except the closure is provided with
     metadata on the example that the closure is being run after.
 */
-public func afterEach(#closure: AfterExampleWithMetadataClosure) {
+public func afterEach(closure: AfterExampleWithMetadataClosure) {
     World.sharedWorld().afterEach(closure: closure)
 }
 
@@ -127,7 +127,7 @@ public func afterEach(#closure: AfterExampleWithMetadataClosure) {
     :param: file The absolute path to the file containing the example. A sensible default is provided.
     :param: line The line containing the example. A sensible default is provided.
 */
-public func it(description: String, flags: FilterFlags = [:], file: String = __FILE__, line: Int = __LINE__, closure: () -> ()) {
+public func it(description: String, flags: FilterFlags = [:], file: String = #file, line: Int = #line, closure: () -> ()) {
     World.sharedWorld().it(description, flags: flags, file: file, line: line, closure: closure)
 }
 
@@ -143,8 +143,8 @@ public func it(description: String, flags: FilterFlags = [:], file: String = __F
     :param: file The absolute path to the file containing the current example group. A sensible default is provided.
     :param: line The line containing the current example group. A sensible default is provided.
 */
-public func itBehavesLike(name: String, flags: FilterFlags = [:], file: String = __FILE__, line: Int = __LINE__) {
-    itBehavesLike(name, flags: flags, file: file, line: line, { return [:] })
+public func itBehavesLike(name: String, flags: FilterFlags = [:], file: String = #file, line: Int = #line) {
+    itBehavesLike(name, flags: flags, file: file, line: line, sharedExampleContext: { return [:] })
 }
 
 /**
@@ -163,7 +163,7 @@ public func itBehavesLike(name: String, flags: FilterFlags = [:], file: String =
     :param: file The absolute path to the file containing the current example group. A sensible default is provided.
     :param: line The line containing the current example group. A sensible default is provided.
 */
-public func itBehavesLike(name: String, flags: FilterFlags = [:], file: String = __FILE__, line: Int = __LINE__, sharedExampleContext: SharedExampleContext) {
+public func itBehavesLike(name: String, flags: FilterFlags = [:], file: String = #file, line: Int = #line, sharedExampleContext: SharedExampleContext) {
     World.sharedWorld().itBehavesLike(name, sharedExampleContext: sharedExampleContext, flags: flags, file: file, line: line)
 }
 
@@ -191,14 +191,14 @@ public func xdescribe(description: String, flags: FilterFlags, closure: () -> ()
     This disables all examples within the closure.
 */
 public func xcontext(description: String, flags: FilterFlags, closure: () -> ()) {
-    xdescribe(description, flags, closure)
+    xdescribe(description, flags: flags, closure: closure)
 }
 
 /**
     Use this to quickly mark an `it` closure as pending.
     This disables the example and ensures the code within the closure is never run.
 */
-public func xit(description: String, flags: FilterFlags = [:], file: String = __FILE__, line: Int = __LINE__, closure: () -> ()) {
+public func xit(description: String, flags: FilterFlags = [:], file: String = #file, line: Int = #line, closure: () -> ()) {
     World.sharedWorld().xit(description, flags: flags, file: file, line: line, closure: closure)
 }
 
@@ -215,13 +215,13 @@ public func fdescribe(description: String, flags: FilterFlags = [:], closure: ()
     Use this to quickly focus a `context` closure. Equivalent to `fdescribe`.
 */
 public func fcontext(description: String, flags: FilterFlags = [:], closure: () -> ()) {
-    fdescribe(description, flags: flags, closure)
+    fdescribe(description, flags: flags, closure: closure)
 }
 
 /**
     Use this to quickly focus an `it` closure, focusing the example.
     If any examples in the test suite are focused, only those examples are executed.
 */
-public func fit(description: String, flags: FilterFlags = [:], file: String = __FILE__, line: Int = __LINE__, closure: () -> ()) {
+public func fit(description: String, flags: FilterFlags = [:], file: String = #file, line: Int = #line, closure: () -> ()) {
     World.sharedWorld().fit(description, flags: flags, file: file, line: line, closure: closure)
 }
